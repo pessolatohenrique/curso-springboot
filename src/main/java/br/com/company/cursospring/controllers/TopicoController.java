@@ -2,6 +2,7 @@ package br.com.company.cursospring.controllers;
 
 import br.com.company.cursospring.models.Curso;
 import br.com.company.cursospring.models.Topico;
+import br.com.company.cursospring.models.dto.TopicoDetalheDto;
 import br.com.company.cursospring.models.dto.TopicoDto;
 import br.com.company.cursospring.models.forms.TopicoForm;
 import br.com.company.cursospring.repository.CursoRepository;
@@ -50,5 +51,11 @@ public class TopicoController {
         URI uri = uriBuilder.path("/topicos").buildAndExpand(topico.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new TopicoDto(topico));
+    }
+
+    @GetMapping("/{id}")
+    public TopicoDetalheDto visualiza(@PathVariable Long id) {
+        Topico topico = repository.getById(id);
+        return new TopicoDetalheDto(topico);
     }
 }
