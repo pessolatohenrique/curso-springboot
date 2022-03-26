@@ -13,6 +13,7 @@ import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +42,7 @@ public class TopicoController {
     }
 
     @PostMapping
-    public ResponseEntity<TopicoDto> cadastra(@RequestBody TopicoForm form, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<TopicoDto> cadastra(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriBuilder) {
         Topico topico = form.converter(form, cursoRepository);
         System.out.println(topico);
         repository.save(topico);
