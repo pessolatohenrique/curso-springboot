@@ -9,6 +9,7 @@ import br.com.company.cursospring.repository.CursoRepository;
 import br.com.company.cursospring.repository.TopicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriBuilderFactory;
@@ -33,7 +34,6 @@ public class TopicoController {
     public List<TopicoDto> lista(String cursoNome) {
         if (cursoNome == null) {
             List<Topico> topicos = repository.findAll();
-            System.out.println(cursoNome);
             return TopicoDto.converter(topicos);
         }
 
@@ -43,9 +43,9 @@ public class TopicoController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<TopicoDto> cadastra(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriBuilder) {
         Topico topico = form.converter(form, cursoRepository);
-        System.out.println(topico);
         repository.save(topico);
 
         URI uri = uriBuilder.path("/topicos").buildAndExpand(topico.getId()).toUri();
@@ -54,8 +54,23 @@ public class TopicoController {
     }
 
     @GetMapping("/{id}")
+    @Transactional
     public TopicoDetalheDto visualiza(@PathVariable Long id) {
         Topico topico = repository.getById(id);
         return new TopicoDetalheDto(topico);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<TopicoDto> atualiza(@PathVariable Long id, @RequestBody @Valid TopicoForm form) {
+        Topico topico = form.atualiza(id, repository);
+        return ResponseEntity.ok(new TopicoDto(topico));
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> deleta(@PathVariable Long id) {
+        repository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

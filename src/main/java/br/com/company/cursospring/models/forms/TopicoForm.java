@@ -8,12 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class TopicoForm {
-    @NotBlank @NotNull
+    @NotEmpty @NotNull
     private String titulo;
-    @NotBlank @NotNull
+    @NotEmpty @NotNull
     private String mensagem;
     @NotBlank @NotNull
     private String cursoNome;
@@ -21,6 +22,14 @@ public class TopicoForm {
     public Topico converter(TopicoForm form, CursoRepository cursoRepository) {
         Curso curso = cursoRepository.findByNome(cursoNome);
         return new Topico(titulo, mensagem, curso);
+    }
+
+    public Topico atualiza(Long id, TopicoRepository repository) {
+        Topico topico = repository.getById(id);
+        topico.setTitulo(this.titulo);
+        topico.setMensagem(this.mensagem);
+
+        return topico;
     }
 
     public String getTitulo() {
