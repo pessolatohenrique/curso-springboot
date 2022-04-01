@@ -8,6 +8,9 @@ import br.com.company.cursospring.models.forms.TopicoForm;
 import br.com.company.cursospring.repository.CursoRepository;
 import br.com.company.cursospring.repository.TopicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +34,13 @@ public class TopicoController {
     private CursoRepository cursoRepository;
 
     @GetMapping
-    public List<TopicoDto> lista(String cursoNome) {
+    public Page<TopicoDto> lista(@RequestParam(required = false) String cursoNome, Pageable pagination) {
         if (cursoNome == null) {
-            List<Topico> topicos = repository.findAll();
+            Page<Topico> topicos = repository.findAll(pagination);
             return TopicoDto.converter(topicos);
         }
 
-        List<Topico> topicos = repository.findByCursoNome(cursoNome);
+        Page<Topico> topicos = repository.findByCursoNome(cursoNome, pagination);
 
         return TopicoDto.converter(topicos);
     }
