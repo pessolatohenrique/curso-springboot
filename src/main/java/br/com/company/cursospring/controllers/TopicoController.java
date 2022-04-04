@@ -8,6 +8,8 @@ import br.com.company.cursospring.models.forms.TopicoForm;
 import br.com.company.cursospring.repository.CursoRepository;
 import br.com.company.cursospring.repository.TopicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,6 +38,7 @@ public class TopicoController {
 
     // ?page=0&size=5&sort=id,desc
     @GetMapping
+    @Cacheable("topicos")
     public Page<TopicoDto> lista(@RequestParam(required = false) String cursoNome,
                                  @PageableDefault(size = 5, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pagination) {
         if (cursoNome == null) {
@@ -50,6 +53,7 @@ public class TopicoController {
 
     @PostMapping
     @Transactional
+    @CacheEvict(value = "topicos", allEntries = true)
     public ResponseEntity<TopicoDto> cadastra(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriBuilder) {
         Topico topico = form.converter(form, cursoRepository);
         repository.save(topico);
@@ -68,6 +72,7 @@ public class TopicoController {
 
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "topicos", allEntries = true)
     public ResponseEntity<TopicoDto> atualiza(@PathVariable Long id, @RequestBody @Valid TopicoForm form) {
         Topico topico = form.atualiza(id, repository);
         return ResponseEntity.ok(new TopicoDto(topico));
@@ -75,6 +80,7 @@ public class TopicoController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(value = "topicos", allEntries = true)
     public ResponseEntity<?> deleta(@PathVariable Long id) {
         repository.deleteById(id);
         return ResponseEntity.ok().build();
