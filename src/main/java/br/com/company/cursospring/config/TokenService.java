@@ -1,6 +1,8 @@
 package br.com.company.cursospring.config;
 
 import br.com.company.cursospring.models.Usuario;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,5 +32,19 @@ public class TokenService {
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact()
                 ;
+    }
+
+    public boolean isValidToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+
+    public Long getIdUser(String token) {
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+        return Long.parseLong(claimsJws.getBody().getSubject());
     }
 }
