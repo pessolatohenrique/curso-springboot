@@ -16,4 +16,9 @@ Realizar o clone do projeto
     git clone https://github.com/USER/curso-spring.git
 
 Acesse a pasta do projeto com uma IDE (IntelliJ ou Eclipse) e execute o projeto
- 
+
+### Swagger do projeto
+
+Para verificar a documentação do processo, acessar o endereço abaixo (com "/" ao final)
+
+    http://localhost:8080/swagger-ui.html
